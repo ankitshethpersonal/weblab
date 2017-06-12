@@ -1,0 +1,74 @@
+<?php
+ini_set('display_errors', 'On');
+error_reporting(E_ALL,'ON');
+
+
+
+//require_once('./includes/requestController.php');
+//require_once('your/database/handler/class');
+ 
+// create request consuming object - 
+$requestObj = new RequestController();
+
+// retrieve the request object
+$request = $requestObj->getRequest();
+
+// retrieve the data - required for post method
+$requestData = $requestObj->getData();
+
+$allowedClasses = array('user', 'login', 'usertimings');
+$allwedMethods  = array('get', 'post', 'put', 'delete', 'patch');
+
+// get the request data
+$className = !empty($requestData['file']) ? $requestData['file'] : "";
+$method    = !empty($requestData['method']) ? $requestData['method'] : "";
+$getId     = !empty($requestData['id']) ? $requestData['id'] : "";
+
+$responseData = array();
+
+if ($className == "" 
+        || !in_array($className, $allowedClasses)
+        || !in_array($method, $allwedMethods)) {
+    
+    $response = RequestController::directRespond(503);
+    echo $resonse;
+    exit;
+} else {
+
+    try {
+        $dbObj = DB::getInstance();    
+    } catch (PDOException $e) {
+        // can log here the error in log file with $e->getCode and $e->getMessage
+        $response = RequestController::directRespond(500);
+       
+        echo $response;
+        exit;
+    }
+    
+    try {
+        $classObj = createResourceObject::getInstance($dbObj, $className);    
+    } catch (Exception $e) {
+        // can log here the error in log file with $e->getCode and $e->getMessage
+        $response = RequestController::directRespond(503);
+       
+        echo $response;
+        exit;
+    }
+    
+
+    $id = "";
+    if (!empty($requestData['id'])) {
+        $id = $requestData['id'];
+    }
+    $methodResponse = $classObj->$method($id);
+        
+    $response = RequestController::respond($methodResponse); 
+    // or you can take the json/xml respnose back and echo here
+    // set the content type- actually need to send the VIEW file
+    header('Content-type: ' . RequestController::$_contentType . '; charset=utf-8');
+    // enable CORS (optional)
+    header("Access-Control-Allow-Origin: *");
+
+    echo $response;
+    exit;
+}

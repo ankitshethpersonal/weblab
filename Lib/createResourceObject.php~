@@ -1,0 +1,24 @@
+<?php
+class createResourceObject
+{
+	public static function getInstance(DB $db, $className = "")
+	{
+		if ($className != "") {
+
+			$realClassName = "Custom_".ucfirst($className);
+
+			try {
+				$obj = new $realClassName($db);
+
+				return $obj;
+			} catch (Excepetion $e) {
+				return false;
+			}
+
+		}
+
+		return false;
+	}
+
+}
+?>

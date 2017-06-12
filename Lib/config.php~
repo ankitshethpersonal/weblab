@@ -1,0 +1,16 @@
+<?php
+/* @File : to define the global- site wide access parameters */
+
+DEFINE('DS', DIRECTORY_SEPARATOR);
+
+// define the base path of the project folder - give folder name after the $_SERVER['DOCUMENT_ROOT']
+define('BASE_PATH', $_SERVER['DOCUMENT_ROOT'].DS."test".DS."restapi");
+
+// define the db info
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', 'root123');
+define('DB_DATABASE', 'test');
+define('DB_PORT', '3306');
+
+?>

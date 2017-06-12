@@ -1,0 +1,33 @@
+<?php
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @covers Email
+ */
+final class Custom_User_Test extends TestCase
+{
+    public function testNoFilters()
+    {
+        $this->assertInstanceOf(
+            Email::class,
+            Email::fromString('user@example.com')
+        );
+    }
+
+    public function testWithUserName()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Email::fromString('invalid');
+    }
+
+    public function testWithLoginDate()
+    {
+        $this->assertEquals(
+            'user@example.com',
+            Email::fromString('user@example.com')
+        );
+    }
+}
+
